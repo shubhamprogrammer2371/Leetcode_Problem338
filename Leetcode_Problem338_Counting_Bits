@@ -1,0 +1,81 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* countBits(int n, int* returnSize) {
+    int *ans = calloc(n + 1,sizeof(int)) , ones , temp;
+    *returnSize = 1;
+    for( int i = 1 ; i <= n ; i++)
+    {
+        ones = 0;
+        temp = i;
+        while(temp)
+        {
+            if(temp&1)
+                ones++;
+            temp >>= 1;
+        }
+        ans[(*returnSize)++] = ones;
+    }   
+    return ans;
+}
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* countBits(int n, int* returnSize) {
+    int *ans = calloc(n + 1,sizeof(int));
+    *returnSize = 0;
+    for( int i = 0 ; i <= n ; i++)
+        ans[(*returnSize)++] = __builtin_popcount(i); 
+    return ans;
+}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* countBits(int n, int* returnSize) {
+    int *ans = calloc(n + 1,sizeof(int));
+    *returnSize = 1;
+    for( int i = 1 ; i <= n ; i++)
+        ans[(*returnSize)++] = (i&1) + ans[i >> 1]; 
+    return ans;
+}
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* countBits(int n, int* returnSize) {
+    int *ans = calloc(n + 1,sizeof(int));
+    *returnSize = 1;
+    for( int i = 1 ; i <= n ; i++)
+        ans[(*returnSize)++] = ans[i/2] + (i%2); 
+    return ans;
+}
+
+/*As the problem says, solving in O(n logn) is relatively straight forward. 
+The real trick of the question is identifying the pattern on how to shortcut the solution.
+
+There is an old trick about how to quickly multiplier binary numbers by 2 (well any power of 2, but that's for another day), right bit shifting any number by 1 will result in a doubling of that number. 
+The key point being that the number of (set) bits set doesn't increase. 
+For example;
+
+value	binary	*2 value	binary	*4 value	binary
+1	00001	2	00010	4	00100
+2	00010	4	00100	8	01000
+3	00011	6	00110	12	01100
+4	00100	8	01000	16	10000
+5	00101	10	01010	20	10100
+You will notice that the number of bits on each row is the same, thus to find number of bits for even numbers, we need only know the number of bits of the number divided by 2. 
+As to how to get odd number solutions, it is just the previous even solution + 1.*/
